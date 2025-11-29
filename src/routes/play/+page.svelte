@@ -13,7 +13,9 @@
 
   let answer = $state("");
 
-  async function handleSumit() {}
+  async function handleSumit() {
+    alert("Not implemented yet");
+  }
 
   const questions = [
     { label: "favorite food", key: "favoriteFood" },
