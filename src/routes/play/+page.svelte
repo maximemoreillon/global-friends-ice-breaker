@@ -15,6 +15,18 @@
 
   async function handleSumit() {}
 
+  const questions = [
+    { label: "favorite food", key: "favoriteFood" },
+    { label: "country", key: "country" },
+    { label: "hobby", key: "hobby" },
+  ];
+
+  function getQuestion() {
+    return questions.at(Math.floor(Math.random() * questions.length));
+  }
+
+  let question = $state(getQuestion());
+
   onMount(async () => {
     currentUser.subscribe(async (user) => {
       if (!user) return;
@@ -33,7 +45,9 @@
   });
 </script>
 
-Find someone who's favorite food is: {targetUser?.favoriteFood || "Loading..."}
+Find someone who's {question?.label} is: {targetUser
+  ? targetUser[question?.key]
+  : "Loading..."}
 
 <form on:submit|preventDefault={handleSumit}>
   <div>
