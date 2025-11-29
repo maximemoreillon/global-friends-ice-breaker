@@ -14,10 +14,10 @@ const firebaseConfig = {
 // Initialize Firebase
 initializeApp(firebaseConfig);
 
-// export const currentUser = writable<User | null>()
+export const currentUser = writable<User | null>();
 
-// const auth = getAuth()
+const auth = getAuth();
 
-// auth.onAuthStateChanged((user) => {
-//   currentUser.set(user)
-// })
+auth.onAuthStateChanged((user) => {
+  currentUser.set(user);
+});
