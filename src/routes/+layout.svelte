@@ -34,5 +34,7 @@
 <main class="max-w-3xl mx-auto my-8">
   {#if authReady}
     {@render children()}
+  {:else}
+    <div>Waiting for auth</div>
   {/if}
 </main>

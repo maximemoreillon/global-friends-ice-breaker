@@ -25,6 +25,9 @@ auth.onAuthStateChanged(async (user) => {
   if (user) {
     const db = getFirestore();
     const userDoc = doc(db, "users", user.uid);
-    await setDoc(userDoc, { lastCheckIn: new Date() }, { merge: true });
+
+    setInterval(async () => {
+      await setDoc(userDoc, { lastCheckIn: new Date() }, { merge: true });
+    }, 5000);
   }
 });
