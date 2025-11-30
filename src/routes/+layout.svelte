@@ -7,6 +7,7 @@
   import { doc, getFirestore, setDoc } from "firebase/firestore";
   import { currentUser } from "$lib/firebase";
   import PlayerCount from "$lib/components/playerCount.svelte";
+  import Score from "$lib/components/score.svelte";
 
   let authReady = $state(false);
   let { children } = $props();
@@ -23,7 +24,7 @@
   <link rel="icon" href={favicon} />
 </svelte:head>
 
-<header class="flex p-2 items-center">
+<header class="flex p-2 items-center gap-2">
   <h1 class="text-2xl">Ice breaker</h1>
   <nav class="flex gap-2 text-xl">
     <a href="/register">Join</a>
@@ -32,7 +33,7 @@
   </nav>
 
   <div class="flex-grow-1" />
-
+  <Score />
   <PlayerCount />
 </header>
 

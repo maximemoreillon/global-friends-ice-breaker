@@ -9,6 +9,7 @@
     updateDoc,
     getDocs,
     query,
+    onSnapshot,
   } from "firebase/firestore";
   import { Input } from "$lib/components/ui/input/index.js";
 
@@ -21,26 +22,32 @@
 
   let loading = $state(false);
 
-  let questions = $state<{ id: string; text: string }[]>([]);
+  let score = $state(0);
+
+  const subscribeToData = () => {
+    // if (unsub) unsub()
+    if (!$currentUser) return;
+
+    const db = getFirestore();
+
+    const userDocRef = doc(db, "users", $currentUser.uid);
+
+    onSnapshot(userDocRef, (docSnap) => {
+      score = docSnap.data()?.score || 0;
+    });
+  };
 
   onMount(() => {
     loading = true;
     currentUser.subscribe(async (user) => {
       if (!user) return;
-      const db = getFirestore();
-
-      const q = query(collection(db, "questions"));
-
-      const querySnapshot = await getDocs(q);
-
-      questions = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        text: doc.data().text,
-      }));
+      subscribeToData();
 
       loading = false;
     });
   });
 </script>
 
-<RegisterForm {questions} />
+<div>
+  Score: {score}
+</div>

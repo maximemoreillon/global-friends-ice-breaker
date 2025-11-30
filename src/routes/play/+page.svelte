@@ -13,13 +13,21 @@
     doc,
     getDoc,
     Firestore,
+    updateDoc,
+    FieldValue,
+    setDoc,
   } from "firebase/firestore";
   import { onMount } from "svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import QrScanner from "$lib/components/qrScanner.svelte";
+  import { goto } from "$app/navigation";
+  import { updated } from "$app/state";
 
   let question = $state<{ id: string; playText: any }>();
   let target = $state<{ id: string; answer: any } | null>();
+  let loading = $state(false);
+  let scanning = $state(false);
+  let processing = $state(false);
 
   async function getQuestion(db: Firestore) {
     const q = query(collection(db, "questions"));
@@ -62,6 +70,9 @@
 
   async function handleScan(scanResult: string) {
     if (!target || !question) return;
+    if (!$currentUser) return;
+    if (processing) return;
+    processing = true;
     const db = getFirestore();
     const docRef = doc(db, "users", scanResult);
     const docSnap = await getDoc(docRef);
@@ -69,11 +80,17 @@
     const scannedUserAnswers = docSnap.data().answers;
     if (!scannedUserAnswers) return;
     const scannedUserAnswer = scannedUserAnswers[question.id];
-    if (scannedUserAnswer === target.answer) alert("Hurray!");
-    else alert("Wrong!");
-  }
+    if (scannedUserAnswer !== target.answer) return goto("/wrong");
 
-  let loading = $state(false);
+    const currentUserDoc = doc(db, "users", $currentUser.uid);
+    const currentUserDocSnap = await getDoc(currentUserDoc);
+    if (!currentUserDocSnap.exists()) return;
+    let score = 1;
+    if (currentUserDocSnap.data().score)
+      score = currentUserDocSnap.data().score + 1;
+    await setDoc(currentUserDoc, { score }, { merge: true });
+    goto("/correct");
+  }
 
   onMount(() => {
     loading = true;
@@ -103,24 +120,16 @@
 
   {#if $currentUser}
     <div class="flex justify-center my-4">
-      <div class="flex flex-col items-center">
-        <!-- <Button onclick={() => (scanning = !scanning)} class="my-4">
-          {scanning ? "Show my QR code" : "Scan QR code"}
-        </Button> -->
-        <!-- {#if scanning} -->
-        <!-- <QrScanner onScan={handleScan} /> -->
-        <!-- <ScanQRCode
-            bind:scanResult
-            options={{
-              onResulted: () => handleScan(),
-            }}
-            enableQRCodeReaderButton={false}
-          /> -->
+      <Button onclick={() => (scanning = !scanning)} class="my-4">
+        {scanning ? "Show my QR code" : "Scan QR code"}
+      </Button>
+    </div>
+    <div class="flex flex-col items-center">
+      {#if scanning}
         <QrScanner onScan={handleScan} />
-        <!-- {:else} -->
-        <QRCode content={$currentUser.uid} />
-        <!-- {/if} -->
-      </div>
+      {:else}
+        <QRCode content={$currentUser.uid} size="256" />
+      {/if}
     </div>
   {/if}
 {:else if target === null}

@@ -9,6 +9,7 @@
     console.log(`Code matched = ${decodedText}`, decodedResult);
 
     onScan(decodedText);
+    html5QrcodeScanner.clear();
   }
 
   function onScanFailure(error: string) {
@@ -22,14 +23,17 @@
   onMount(() => {
     html5QrcodeScanner = new Html5QrcodeScanner(
       "reader",
-      { fps: 10 },
+      {
+        fps: 10,
+        // qrbox: { height: 256, width: 256 }
+      },
       /* verbose= */ false
     );
     html5QrcodeScanner.render(onScanSuccess, onScanFailure);
   });
 </script>
 
-<div id="reader" />
+<div id="reader" class="max-w-3xl w-full" />
 
 <style>
   :global(#reader__scan_region) {
