@@ -3,7 +3,7 @@
   import UserPlusIcon from "@lucide/svelte/icons/user-plus";
   import PlayIcon from "@lucide/svelte/icons/play";
   import "./layout.css";
-  import favicon from "$lib/assets/favicon.svg";
+  import favicon from "$lib/assets/ice-break.png";
   import "$lib/firebase";
   import { getAuth, signInAnonymously } from "firebase/auth";
   import { onMount } from "svelte";
@@ -23,22 +23,24 @@
 </script>
 
 <svelte:head>
+  <title>Ice breaker</title>
   <link rel="icon" href={favicon} />
 </svelte:head>
 
-<header class="flex p-2 items-center gap-4">
+<header class="flex p-2 items-center gap-4 border-b">
+  <img src={favicon} alt="" class="h-8" />
   <h1 class="text-2xl">Ice Breaker</h1>
-  <div class="flex-grow-1" />
+  <div class="grow"></div>
 
   <nav class="flex gap-2 text-xl">
-    <Button href="/register" variant="secondary">
+    <Button href="/register">
       <UserPlusIcon />
-      <span>Join</span>
+      <!-- <span>Join</span> -->
     </Button>
 
-    <Button href="/play" variant="secondary">
+    <Button href="/play">
       <PlayIcon />
-      <span>Play</span>
+      <!-- <span>Play</span> -->
     </Button>
   </nav>
 
