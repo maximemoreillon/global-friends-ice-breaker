@@ -1,13 +1,7 @@
 <script lang="ts">
   import * as Form from "$lib/components/ui/form/index.js";
   import { currentUser } from "$lib/firebase";
-  import {
-    collection,
-    setDoc,
-    getFirestore,
-    doc,
-    updateDoc,
-  } from "firebase/firestore";
+  import { setDoc, getFirestore, doc } from "firebase/firestore";
   import { Input } from "$lib/components/ui/input/index.js";
 
   import z from "zod";

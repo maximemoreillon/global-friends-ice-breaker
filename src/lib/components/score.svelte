@@ -1,24 +1,8 @@
 <script lang="ts">
-  import * as Form from "$lib/components/ui/form/index.js";
+  import TrophyIcon from "@lucide/svelte/icons/trophy";
   import { currentUser } from "$lib/firebase";
-  import {
-    collection,
-    setDoc,
-    getFirestore,
-    doc,
-    updateDoc,
-    getDocs,
-    query,
-    onSnapshot,
-  } from "firebase/firestore";
-  import { Input } from "$lib/components/ui/input/index.js";
-
-  import z from "zod";
-  import { superForm, defaults, type SuperForm } from "sveltekit-superforms";
-  import { zod4 } from "sveltekit-superforms/adapters";
-  import { goto } from "$app/navigation";
+  import { getFirestore, doc, onSnapshot } from "firebase/firestore";
   import { onMount } from "svelte";
-  import RegisterForm from "$lib/components/registerForm.svelte";
 
   let loading = $state(false);
 
@@ -48,6 +32,7 @@
   });
 </script>
 
-<div>
-  Score: {score}
+<div class="flex items-center gap-1">
+  <TrophyIcon />
+  <span>{score}</span>
 </div>

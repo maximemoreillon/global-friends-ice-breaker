@@ -1,21 +1,7 @@
 <script lang="ts">
-  import * as Form from "$lib/components/ui/form/index.js";
   import { currentUser } from "$lib/firebase";
-  import {
-    collection,
-    setDoc,
-    getFirestore,
-    doc,
-    updateDoc,
-    getDocs,
-    query,
-  } from "firebase/firestore";
-  import { Input } from "$lib/components/ui/input/index.js";
+  import { collection, getFirestore, getDocs, query } from "firebase/firestore";
 
-  import z from "zod";
-  import { superForm, defaults, type SuperForm } from "sveltekit-superforms";
-  import { zod4 } from "sveltekit-superforms/adapters";
-  import { goto } from "$app/navigation";
   import { onMount } from "svelte";
   import RegisterForm from "$lib/components/registerForm.svelte";
 

@@ -1,9 +1,8 @@
 <script lang="ts">
+  import { Skeleton } from "$lib/components/ui/skeleton";
+  import ScanQrCodeIcon from "@lucide/svelte/icons/scan-qr-code";
   import QRCode from "@trasherdk/svelte-qrcode";
-  import Input from "$lib/components/ui/input/input.svelte";
   import { currentUser } from "$lib/firebase";
-  // import QrCode from "$lib/qrCode.svelte";
-  import { ScanQRCode } from "@kuiper/svelte-scan-qrcode";
   import {
     collection,
     query,
@@ -13,15 +12,12 @@
     doc,
     getDoc,
     Firestore,
-    updateDoc,
-    FieldValue,
     setDoc,
   } from "firebase/firestore";
   import { onMount } from "svelte";
   import Button from "$lib/components/ui/button/button.svelte";
   import QrScanner from "$lib/components/qrScanner.svelte";
   import { goto } from "$app/navigation";
-  import { updated } from "$app/state";
 
   let question = $state<{ id: string; playText: any }>();
   let target = $state<{ id: string; answer: any } | null>();
@@ -106,7 +102,13 @@
 </script>
 
 {#if loading}
-  <div>Loading</div>
+  <div class="flex items-center space-x-4 justify-center">
+    <Skeleton class="size-12 rounded-full" />
+    <div class="space-y-2">
+      <Skeleton class="h-4 w-[250px]" />
+      <Skeleton class="h-4 w-[200px]" />
+    </div>
+  </div>
 {:else if question && target}
   <div class="text-center">
     <div class="text-xl">
@@ -121,6 +123,7 @@
   {#if $currentUser}
     <div class="flex justify-center my-4">
       <Button onclick={() => (scanning = !scanning)} class="my-4">
+        <ScanQrCodeIcon />
         {scanning ? "Show my QR code" : "Scan QR code"}
       </Button>
     </div>
