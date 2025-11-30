@@ -1,9 +1,9 @@
 <script lang="ts">
-  import QrScanner from "$lib/components/qrScanner.svelte";
   import QRCode from "@trasherdk/svelte-qrcode";
   import Input from "$lib/components/ui/input/input.svelte";
   import { currentUser } from "$lib/firebase";
   // import QrCode from "$lib/qrCode.svelte";
+  import { ScanQRCode } from "@kuiper/svelte-scan-qrcode";
   import {
     collection,
     query,
@@ -16,6 +16,7 @@
   } from "firebase/firestore";
   import { onMount } from "svelte";
   import Button from "$lib/components/ui/button/button.svelte";
+  import QrScanner from "$lib/components/qrScanner.svelte";
 
   let question = $state<{ id: string; playText: any }>();
   let target = $state<{ id: string; answer: any } | null>();
@@ -61,11 +62,11 @@
 
   let scanning = $state(true);
 
-  async function handleScan(text: string) {
+  async function handleScan(scanResult: string) {
     if (!target || !question) return;
     scanning = false;
     const db = getFirestore();
-    const docRef = doc(db, "users", text);
+    const docRef = doc(db, "users", scanResult);
     const docSnap = await getDoc(docRef);
     if (!docSnap.exists()) return;
     const scannedUserAnswers = docSnap.data().answers;
@@ -110,6 +111,14 @@
           {scanning ? "Show my QR code" : "Scan QR code"}
         </Button>
         {#if scanning}
+          <!-- <QrScanner onScan={handleScan} /> -->
+          <!-- <ScanQRCode
+            bind:scanResult
+            options={{
+              onResulted: () => handleScan(),
+            }}
+            enableQRCodeReaderButton={false}
+          /> -->
           <QrScanner onScan={handleScan} />
         {:else}
           <QRCode content={$currentUser.uid} />

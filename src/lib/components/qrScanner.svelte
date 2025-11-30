@@ -1,31 +1,42 @@
 <script lang="ts">
-  import EasyQrcodeReader from "@cloudparker/easy-qrcode-reader-svelte";
+  import { Html5QrcodeScanner, Html5Qrcode } from "html5-qrcode";
   import { onMount } from "svelte";
-
-  let qrcodeReaderRef: EasyQrcodeReader;
-  let clientWidth: number;
 
   const { onScan } = $props();
 
-  // onMount(() => {
-  //   return () => {
-  //     qrcodeReaderRef && qrcodeReaderRef.close();
-  //   };
-  // });
+  function onScanSuccess(decodedText: string, decodedResult: any) {
+    // handle the scanned code as you like, for example:
+    // console.log(`Code matched = ${decodedText}`, decodedResult);
+    onScan(decodedText);
+  }
+
+  function onScanFailure(error: string) {
+    // handle scan failure, usually better to ignore and keep scanning.
+    // for example:
+    console.warn(`Code scan error = ${error}`);
+  }
+
+  let html5QrcodeScanner: Html5QrcodeScanner;
+
+  onMount(() => {
+    html5QrcodeScanner = new Html5QrcodeScanner(
+      "reader",
+      { fps: 10 },
+      /* verbose= */ false
+    );
+    html5QrcodeScanner.render(onScanSuccess, onScanFailure);
+  });
 </script>
 
-<div class="camera-container" bind:clientWidth>
-  <EasyQrcodeReader
-    bind:this={qrcodeReaderRef}
-    width={clientWidth}
-    onQrcode={onScan}
-  />
-</div>
+<div id="reader" />
 
 <style>
-  .camera-container {
+  :global(#reader__scan_region) {
     display: flex;
-    align-items: center;
     justify-content: center;
+  }
+
+  :global(#html5-qrcode-anchor-scan-type-change) {
+    display: none !important;
   }
 </style>
