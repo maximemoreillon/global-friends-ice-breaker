@@ -1,5 +1,9 @@
 <script lang="ts">
+  import QrScanner from "$lib/components/qrScanner.svelte";
+  import QRCode from "@trasherdk/svelte-qrcode";
+  import Input from "$lib/components/ui/input/input.svelte";
   import { currentUser } from "$lib/firebase";
+  // import QrCode from "$lib/qrCode.svelte";
   import {
     collection,
     query,
@@ -9,56 +13,33 @@
   } from "firebase/firestore";
   import { onMount } from "svelte";
 
-  let targetUser = $state<any>(null);
+  const { data } = $props();
 
-  let answer = $state("");
+  let scanText = $state("nothing");
 
-  async function handleSumit() {
-    alert("Not implemented yet");
+  async function handleScan(text: string) {
+    scanText = text;
   }
-
-  const questions = [
-    { label: "favorite food", key: "favoriteFood" },
-    { label: "country", key: "country" },
-    { label: "hobby", key: "hobby" },
-  ];
-
-  function getQuestion() {
-    return questions.at(Math.floor(Math.random() * questions.length));
-  }
-
-  let question = $state(getQuestion());
-
-  onMount(async () => {
-    currentUser.subscribe(async (user) => {
-      if (!user) return;
-      console.log("HERE");
-      const db = getFirestore();
-      const q = query(collection(db, "users"));
-
-      const querySnapshot = await getDocs(q);
-
-      const randIndex = Math.floor(Math.random() * querySnapshot.size);
-
-      targetUser = querySnapshot.docs.at(randIndex)?.data();
-
-      console.log(targetUser);
-    });
-  });
 </script>
 
-Find someone who's {question?.label} is: {targetUser
-  ? targetUser[question?.key]
-  : "Loading..."}
-
-<form on:submit|preventDefault={handleSumit}>
-  <div>
-    <label for="name">Answer:</label>
-    <input
-      id="name"
-      type="text"
-      bind:value={answer}
-      class="border border-grey rounded"
-    />
+<div class="text-center">
+  <div class="text-xl">
+    {data.question.playText}
   </div>
-</form>
+
+  <div class="text-3xl">
+    {data.target.answer}
+  </div>
+</div>
+
+<div class="flex justify-center">
+  <QrScanner onScan={handleScan} />
+</div>
+
+<div class="flex justify-center">
+  {#if $currentUser}
+    <QRCode content={$currentUser.uid} />
+  {/if}
+</div>
+
+{scanText}
