@@ -10,15 +10,27 @@
     where,
     getDocs,
     getFirestore,
+    doc,
+    getDoc,
   } from "firebase/firestore";
   import { onMount } from "svelte";
+  import Button from "$lib/components/ui/button/button.svelte";
 
   const { data } = $props();
 
-  let scanText = $state("nothing");
+  let scanning = $state(false);
 
   async function handleScan(text: string) {
-    scanText = text;
+    scanning = false;
+    const db = getFirestore();
+    const docRef = doc(db, "users", text);
+    const docSnap = await getDoc(docRef);
+    if (!docSnap.exists()) return;
+    const scannedUserAnswers = docSnap.data().answers;
+    if (!scannedUserAnswers) return;
+    const scannedUserAnswer = scannedUserAnswers[data.question.id];
+    if (scannedUserAnswer === data.target.answer) alert("Hurray!");
+    else alert("Wrong!");
   }
 </script>
 
@@ -32,14 +44,18 @@
   </div>
 </div>
 
-<div class="flex justify-center">
-  <QrScanner onScan={handleScan} />
-</div>
+{#if $currentUser}
+  <div class="flex justify-center">
+    <div class="flex flex-col items-center">
+      {#if scanning}
+        <Button onclick={() => (scanning = false)}>Show QR code</Button>
 
-<div class="flex justify-center">
-  {#if $currentUser}
-    <QRCode content={$currentUser.uid} />
-  {/if}
-</div>
-
-{scanText}
+        <QrScanner onScan={handleScan} />
+      {:else}
+        <Button onclick={() => (scanning = true)}>QR scanner</Button>
+        <QRCode content={$currentUser.uid} />
+      {/if}
+    </div>
+    <!-- TODO: find library that does not record audio -->
+  </div>
+{/if}

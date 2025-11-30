@@ -13,6 +13,7 @@ import z from "zod";
 
 async function getQuestion(db: Firestore) {
   // TODO: filter questions from users that are checked in
+  // TODO: really?
   const q = query(collection(db, "questions"));
 
   const querySnapshot = await getDocs(q);
@@ -27,7 +28,8 @@ async function getQuestion(db: Firestore) {
 async function getTarget(db: Firestore, questionId: string) {
   // TODO: where condition to only fetch users that have answered
   // TODO: only fetch users that have answers
-  const q = query(collection(db, "users"));
+  // TODO: fetch users that are checked in
+  const q = query(collection(db, "users"), where("answers", "!=", null));
 
   const querySnapshot = await getDocs(q);
 
