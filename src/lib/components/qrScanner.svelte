@@ -6,7 +6,8 @@
 
   function onScanSuccess(decodedText: string, decodedResult: any) {
     // handle the scanned code as you like, for example:
-    // console.log(`Code matched = ${decodedText}`, decodedResult);
+    console.log(`Code matched = ${decodedText}`, decodedResult);
+
     onScan(decodedText);
   }
 

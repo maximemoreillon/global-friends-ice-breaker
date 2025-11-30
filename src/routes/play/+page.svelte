@@ -60,11 +60,8 @@
     return { id: randomDoc.id, answer };
   }
 
-  let scanning = $state(true);
-
   async function handleScan(scanResult: string) {
     if (!target || !question) return;
-    // scanning = false;
     const db = getFirestore();
     const docRef = doc(db, "users", scanResult);
     const docSnap = await getDoc(docRef);
@@ -107,22 +104,22 @@
   {#if $currentUser}
     <div class="flex justify-center my-4">
       <div class="flex flex-col items-center">
-        <Button onclick={() => (scanning = !scanning)} class="my-4">
+        <!-- <Button onclick={() => (scanning = !scanning)} class="my-4">
           {scanning ? "Show my QR code" : "Scan QR code"}
-        </Button>
-        {#if scanning}
-          <!-- <QrScanner onScan={handleScan} /> -->
-          <!-- <ScanQRCode
+        </Button> -->
+        <!-- {#if scanning} -->
+        <!-- <QrScanner onScan={handleScan} /> -->
+        <!-- <ScanQRCode
             bind:scanResult
             options={{
               onResulted: () => handleScan(),
             }}
             enableQRCodeReaderButton={false}
           /> -->
-          <QrScanner onScan={handleScan} />
-        {:else}
-          <QRCode content={$currentUser.uid} />
-        {/if}
+        <QrScanner onScan={handleScan} />
+        <!-- {:else} -->
+        <QRCode content={$currentUser.uid} />
+        <!-- {/if} -->
       </div>
     </div>
   {/if}
