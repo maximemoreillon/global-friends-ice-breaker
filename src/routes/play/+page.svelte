@@ -34,8 +34,6 @@
   }
 
   async function getTarget(db: Firestore, questionId: string) {
-    // TODO: fetch users that are checked in
-
     const oneHourAgo = new Date();
     oneHourAgo.setHours(oneHourAgo.getHours() - 1);
 
@@ -43,18 +41,15 @@
       collection(db, "users"),
       where("answers", "!=", null)
       // where("id", "!=", $currentUser?.uid) // Does not work
-      // where("lastCheckIn", ">", oneHourAgo)
+      // where("lastCheckIn", ">", oneHourAgo) // Does not work
     );
 
     const querySnapshot = await getDocs(q);
-    // Filtering after query to bypass multiple != operations
-    const filteredDocs = querySnapshot.docs.filter((doc) => {
-      // console.log(doc.data().lastCheckIn.seconds);
-      return (
+    const filteredDocs = querySnapshot.docs.filter(
+      (doc) =>
         doc.id !== $currentUser?.uid &&
         doc.data().lastCheckIn.seconds * 1000 > oneHourAgo.getTime()
-      );
-    });
+    );
 
     if (!filteredDocs.length) return null;
 
@@ -136,5 +131,5 @@
     </div>
   {/if}
 {:else if target === null}
-  No available player
+  <div>No available player</div>
 {/if}
