@@ -46,7 +46,7 @@
   <PlayerCount />
 </header>
 
-<main class="max-w-3xl mx-auto my-8">
+<main class="max-w-3xl mx-auto my-8 px-2">
   {#if authReady}
     {@render children()}
   {:else}

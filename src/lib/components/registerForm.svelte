@@ -51,7 +51,7 @@
   const { form: formData, enhance } = form;
 </script>
 
-<form method="POST" use:enhance>
+<form method="POST" use:enhance class="flex flex-col gap-6">
   {#each questions as question}
     <Form.Field {form} name={question.id}>
       <Form.Control>
@@ -60,10 +60,12 @@
           <Input {...props} bind:value={$formData[question.id]} />
         {/snippet}
       </Form.Control>
-      <Form.Description>E.g. Spahetti</Form.Description>
+      <!-- <Form.Description>E.g. Spahetti</Form.Description> -->
       <Form.FieldErrors />
     </Form.Field>
   {/each}
 
-  <Form.Button>Submit</Form.Button>
+  <div class="flex justify-center">
+    <Form.Button>Submit</Form.Button>
+  </div>
 </form>

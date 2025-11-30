@@ -131,5 +131,5 @@
     </div>
   {/if}
 {:else if target === null}
-  <div>No available player</div>
+  <div class="text-center">No available player</div>
 {/if}
