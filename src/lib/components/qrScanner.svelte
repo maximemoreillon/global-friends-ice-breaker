@@ -6,8 +6,8 @@
   let html5QrCode: Html5Qrcode;
 
   function onScanSuccess(decodedText: string, decodedResult: any) {
-    html5QrCode.clear();
     onScan(decodedText);
+    html5QrCode.clear();
   }
 
   function onScanFailure(error: string) {
@@ -20,7 +20,7 @@
     if (!cameras.length) return alert("No cameras found");
     const opts = {
       fps: 10,
-      qrbox: { width: 250, height: 250 },
+      // qrbox: { width: 250, height: 250 },
     };
     html5QrCode.start(
       { facingMode: "environment" },
