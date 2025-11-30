@@ -26,6 +26,7 @@ async function getQuestion(db: Firestore) {
 
 async function getTarget(db: Firestore, questionId: string) {
   // TODO: where condition to only fetch users that have answered
+  // TODO: only fetch users that have answers
   const q = query(collection(db, "users"));
 
   const querySnapshot = await getDocs(q);

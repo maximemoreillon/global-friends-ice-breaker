@@ -34,6 +34,7 @@
 		"vite": "^7.2.2"
 	},
 	"dependencies": {
+		"@cloudparker/easy-qrcode-reader-svelte": "^1.0.2",
 		"@sveltejs/adapter-static": "^3.0.10",
 		"@trasherdk/svelte-qrcode": "^0.2.4",
 		"firebase": "^12.6.0",
