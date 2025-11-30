@@ -13,7 +13,7 @@
   function onScanFailure(error: string) {
     // handle scan failure, usually better to ignore and keep scanning.
     // for example:
-    console.warn(`Code scan error = ${error}`);
+    // console.warn(`Code scan error = ${error}`);
   }
 
   let html5QrcodeScanner: Html5QrcodeScanner;

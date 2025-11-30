@@ -64,7 +64,7 @@
 
   async function handleScan(scanResult: string) {
     if (!target || !question) return;
-    scanning = false;
+    // scanning = false;
     const db = getFirestore();
     const docRef = doc(db, "users", scanResult);
     const docSnap = await getDoc(docRef);
