@@ -1,5 +1,7 @@
 <script lang="ts">
-  import { Skeleton } from "$lib/components/ui/skeleton";
+  import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
+  import { Skeleton } from "$lib/components/ui/skeleton/index.js";
+  import { Spinner } from "$lib/components/ui/spinner/index.js";
   import ScanQrCodeIcon from "@lucide/svelte/icons/scan-qr-code";
   import QRCode from "@trasherdk/svelte-qrcode";
   import { currentUser } from "$lib/firebase";
@@ -110,7 +112,7 @@
       {question.playText}
     </div>
 
-    <div class="text-3xl">
+    <div class="text-3xl my-2">
       {target.answer}
     </div>
   </div>
@@ -133,3 +135,19 @@
 {:else if target === null}
   <div class="text-center">No available player</div>
 {/if}
+
+<AlertDialog.Root bind:open={processing}>
+  <!-- <AlertDialog.Trigger>Open</AlertDialog.Trigger> -->
+  <AlertDialog.Content class="w-xs">
+    <AlertDialog.Header>
+      <AlertDialog.Title class="text-center">Checking...</AlertDialog.Title>
+      <AlertDialog.Description class="flex justify-center">
+        <Spinner class="size-18" />
+      </AlertDialog.Description>
+    </AlertDialog.Header>
+    <!-- <AlertDialog.Footer>
+      <AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
+      <AlertDialog.Action>Continue</AlertDialog.Action>
+    </AlertDialog.Footer> -->
+  </AlertDialog.Content>
+</AlertDialog.Root>
