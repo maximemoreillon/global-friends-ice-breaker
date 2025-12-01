@@ -3,6 +3,7 @@
   import { Skeleton } from "$lib/components/ui/skeleton/index.js";
   import { Spinner } from "$lib/components/ui/spinner/index.js";
   import ScanQrCodeIcon from "@lucide/svelte/icons/scan-qr-code";
+  import FrownIcon from "@lucide/svelte/icons/frown";
   import QRCode from "@trasherdk/svelte-qrcode";
   import { currentUser } from "$lib/firebase";
   import {
@@ -20,6 +21,7 @@
   import Button from "$lib/components/ui/button/button.svelte";
   import QrScanner from "$lib/components/qrScanner.svelte";
   import { goto } from "$app/navigation";
+  import { playerIsActive } from "$lib/helpers";
 
   let question = $state<{ id: string; playText: any }>();
   let target = $state<{ id: string; answer: any } | null>();
@@ -48,9 +50,7 @@
 
     const querySnapshot = await getDocs(q);
     const filteredDocs = querySnapshot.docs.filter(
-      (doc) =>
-        doc.id !== $currentUser?.uid &&
-        doc.data().lastCheckIn.seconds * 1000 > oneHourAgo.getTime()
+      (doc) => doc.id !== $currentUser?.uid && playerIsActive(doc)
     );
 
     if (!filteredDocs.length) return null;
@@ -133,7 +133,10 @@
     </div>
   {/if}
 {:else if target === null}
-  <div class="text-center">No available player</div>
+  <div class="flex flex-col gap-2 items-center">
+    <FrownIcon size="78" />
+    <div>No available player</div>
+  </div>
 {/if}
 
 <AlertDialog.Root bind:open={processing}>

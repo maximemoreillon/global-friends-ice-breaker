@@ -3,6 +3,7 @@
   import { currentUser } from "$lib/firebase";
   import { getFirestore, doc, onSnapshot } from "firebase/firestore";
   import { onMount } from "svelte";
+  import Button from "./ui/button/button.svelte";
 
   let loading = $state(false);
 

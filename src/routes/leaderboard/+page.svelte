@@ -1,19 +1,20 @@
 <script lang="ts">
-  import UserIcon from "@lucide/svelte/icons/user";
   import { currentUser } from "$lib/firebase";
+  import { playerIsActive } from "$lib/helpers";
   import {
     collection,
     getFirestore,
     query,
     onSnapshot,
     where,
+    type DocumentData,
   } from "firebase/firestore";
 
   import { onMount } from "svelte";
 
   let loading = $state(false);
 
-  let userCount = $state(0);
+  let players = $state<DocumentData[]>([]);
 
   const subscribeToData = () => {
     // if (unsub) unsub()
@@ -25,15 +26,10 @@
     const q = query(collectionRef, where(`answers`, "!=", null));
 
     onSnapshot(q, ({ docs }) => {
-      userCount = docs.reduce((acc, doc) => {
-        const oneHourAgo = new Date();
-        oneHourAgo.setHours(oneHourAgo.getHours() - 1);
-        const isOnline =
-          doc.data().lastCheckIn.seconds * 1000 > oneHourAgo.getTime();
-        // if (doc.id === $currentUser.uid) return acc;
-        if (isOnline) return acc + 1;
-        return acc;
-      }, 0);
+      players = docs
+        // .filter((d) => d.data().score !== undefined)
+        .filter(playerIsActive)
+        .toSorted((a, b) => (b.data().score || 0) - (a.data().score || 0));
     });
   };
 
@@ -48,7 +44,20 @@
   });
 </script>
 
-<div class="flex items-center gap-1">
-  <UserIcon />
-  <span>{userCount}</span>
-</div>
+<h2 class="text-3xl">Leaderboard</h2>
+{#if $currentUser}
+  <ul class="my-2">
+    {#each players as player}
+      <li>
+        <span>
+          {player.id} : {player.data().score || 0}
+        </span>
+
+        {#if $currentUser.uid === player.id}
+          <span> (you)</span>
+        {/if}
+      </li>
+    {/each}
+    <li></li>
+  </ul>
+{/if}

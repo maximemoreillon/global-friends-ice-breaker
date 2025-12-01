@@ -27,9 +27,11 @@
   <link rel="icon" href={favicon} />
 </svelte:head>
 
-<header class="flex p-2 items-center gap-4 border-b">
-  <img src={favicon} alt="" class="h-8" />
-  <h1 class="text-2xl hidden sm:block">Ice Breaker</h1>
+<header class="flex p-2 items-center gap-2 border-b">
+  <a href="/" class="flex items-center gap-2">
+    <img src={favicon} alt="" class="h-8" />
+    <h1 class="text-2xl hidden sm:block">Ice Breaker</h1>
+  </a>
   <div class="grow"></div>
 
   <nav class="flex gap-2 text-xl">
@@ -42,10 +44,12 @@
       <PlayIcon />
       <span class="hidden sm:inline">Play</span>
     </Button>
-  </nav>
 
-  <Score />
-  <PlayerCount />
+    <Button href="/leaderboard" variant="outline">
+      <Score />
+      <PlayerCount />
+    </Button>
+  </nav>
 </header>
 
 <main class="max-w-3xl mx-auto my-8 px-2">
