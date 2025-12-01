@@ -9,7 +9,7 @@
   <img src={favicon} alt="" class="h-42" />
   <div class="my-6 flex flex-col items-center">
     <div class="text-3xl">Global Friends Ice Breaker</div>
-    <div class="">Meet new people, get points</div>
+    <div class="">Meet new people, get points!</div>
   </div>
   <div class="flex gap-4 justify-center flex-col items-center">
     <Button href="/register">

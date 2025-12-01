@@ -29,7 +29,7 @@
 
 <header class="flex p-2 items-center gap-4 border-b">
   <img src={favicon} alt="" class="h-8" />
-  <h1 class="text-2xl">Ice Breaker</h1>
+  <h1 class="text-2xl hidden sm:block">Ice Breaker</h1>
   <div class="grow"></div>
 
   <nav class="flex gap-2 text-xl">
