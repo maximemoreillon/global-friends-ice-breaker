@@ -6,6 +6,7 @@
     getFirestore,
     query,
     onSnapshot,
+    where,
   } from "firebase/firestore";
 
   import { onMount } from "svelte";
@@ -21,7 +22,7 @@
     const db = getFirestore();
 
     const collectionRef = collection(db, "users");
-    const q = query(collectionRef);
+    const q = query(collectionRef, where(`answers`, "!=", null));
 
     onSnapshot(q, ({ docs }) => {
       userCount = docs.reduce((acc, doc) => {
