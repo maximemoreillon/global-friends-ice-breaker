@@ -11,19 +11,17 @@
 
   let { questions }: { questions: { text: string; id: string }[] } = $props();
 
-  const answersSchema = z.object(
-    questions.reduce(
-      (acc, q) => ({
-        ...acc,
-        [q.id]: z.string().min(3).max(60),
-      }),
-      {}
-    )
-  );
-
   const schema = z.object({
     name: z.string().min(3).max(60),
-    answers: answersSchema,
+    answers: z.object(
+      questions.reduce(
+        (acc, q) => ({
+          ...acc,
+          [q.id]: z.string().min(3).max(60),
+        }),
+        {}
+      )
+    ),
   });
 
   const data = {
