@@ -50,7 +50,7 @@
     {#each players as player}
       <li>
         <span>
-          {player.id} : {player.data().score || 0}
+          {player.data().name || "Anonymous"} : {player.data().score || 0}
         </span>
 
         {#if $currentUser.uid === player.id}

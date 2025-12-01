@@ -11,7 +11,7 @@
 
   let { questions }: { questions: { text: string; id: string }[] } = $props();
 
-  const schema = z.object(
+  const answersSchema = z.object(
     questions.reduce(
       (acc, q) => ({
         ...acc,
@@ -21,26 +21,34 @@
     )
   );
 
-  const initialData = questions.reduce(
-    (acc, q) => ({
-      ...acc,
-      [q.id]: "",
-    }),
-    {}
-  );
+  const schema = z.object({
+    name: z.string().min(3).max(60),
+    answers: answersSchema,
+  });
 
-  const form = superForm(defaults(initialData, zod4(schema)), {
+  const data = {
+    name: "",
+    answers: questions.reduce(
+      (acc, q) => ({
+        ...acc,
+        [q.id]: "",
+      }),
+      {}
+    ),
+  };
+
+  const form = superForm(defaults(data, zod4(schema)), {
     validators: zod4(schema),
     SPA: true,
+    dataType: "json",
     async onUpdate({ form }) {
       if (!form.valid) return;
       if (!$currentUser) return;
       try {
         const db = getFirestore();
         const userDoc = doc(db, "users", $currentUser.uid);
-        await setDoc(userDoc, { answers: form.data }, { merge: true });
-        alert("Success");
-        return goto("/play");
+        await setDoc(userDoc, form.data, { merge: true });
+        return goto("/register/success");
       } catch (error) {
         console.error(error);
         alert("Problem");
@@ -52,12 +60,23 @@
 </script>
 
 <form method="POST" use:enhance class="flex flex-col gap-6">
+  <Form.Field {form} name={"name"}>
+    <Form.Control>
+      {#snippet children({ props })}
+        <Form.Label>What is your name?</Form.Label>
+        <Input {...props} bind:value={$formData.name} />
+      {/snippet}
+    </Form.Control>
+    <Form.Description>Nicknames are OK</Form.Description>
+    <Form.FieldErrors />
+  </Form.Field>
+
   {#each questions as question}
-    <Form.Field {form} name={question.id}>
+    <Form.Field {form} name={`answers.${question.id}`}>
       <Form.Control>
         {#snippet children({ props })}
           <Form.Label>{question.text}</Form.Label>
-          <Input {...props} bind:value={$formData[question.id]} />
+          <Input {...props} bind:value={$formData.answers[question.id]} />
         {/snippet}
       </Form.Control>
       <!-- <Form.Description>E.g. Spahetti</Form.Description> -->
