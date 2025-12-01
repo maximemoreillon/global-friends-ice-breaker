@@ -51,7 +51,7 @@
         return goto("/register/success");
       } catch (error) {
         console.error(error);
-        alert("Problem");
+        alert("Registration failed");
       }
     },
   });
@@ -79,7 +79,9 @@
           <Input {...props} bind:value={$formData.answers[question.id]} />
         {/snippet}
       </Form.Control>
-      <!-- <Form.Description>E.g. Spahetti</Form.Description> -->
+      <!-- <Form.Description>
+        {question.id}: {$formData.answers[question.id]}
+      </Form.Description> -->
       <Form.FieldErrors />
     </Form.Field>
   {/each}

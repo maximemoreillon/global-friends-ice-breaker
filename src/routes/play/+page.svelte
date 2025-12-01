@@ -29,7 +29,9 @@
   let scanning = $state(false);
   let processing = $state(false);
 
-  async function getQuestion(db: Firestore) {
+  const db = getFirestore();
+
+  async function getQuestion() {
     const q = query(collection(db, "questions"));
     const querySnapshot = await getDocs(q);
     const randomIndex = Math.floor(Math.random() * querySnapshot.docs.length);
@@ -37,10 +39,7 @@
     return { id: randomDoc.id, playText: randomDoc.data().playText };
   }
 
-  async function getTarget(db: Firestore, questionId: string) {
-    const oneHourAgo = new Date();
-    oneHourAgo.setHours(oneHourAgo.getHours() - 1);
-
+  async function getTarget(questionId: string) {
     const q = query(
       collection(db, "users"),
       where(`answers.${questionId}`, "!=", null)
@@ -61,38 +60,40 @@
     return { id: randomDoc.id, answer };
   }
 
-  async function handleScan(scanResult: string) {
-    if (!target || !question) return;
+  async function incrementScore() {
     if (!$currentUser) return;
-    if (processing) return;
-    processing = true;
-    const db = getFirestore();
-    const docRef = doc(db, "users", scanResult);
-    const docSnap = await getDoc(docRef);
-    if (!docSnap.exists()) return;
-    const scannedUserAnswers = docSnap.data().answers;
-    if (!scannedUserAnswers) return;
-    const scannedUserAnswer = scannedUserAnswers[question.id];
-    if (scannedUserAnswer !== target.answer) return goto("/wrong");
-
     const currentUserDoc = doc(db, "users", $currentUser.uid);
     const currentUserDocSnap = await getDoc(currentUserDoc);
     if (!currentUserDocSnap.exists()) return;
-    let score = 1;
-    if (currentUserDocSnap.data().score)
-      score = currentUserDocSnap.data().score + 1;
+    const score = (currentUserDocSnap.data().score || 0) + 1;
     await setDoc(currentUserDoc, { score }, { merge: true });
-    goto("/correct");
+  }
+
+  async function handleScan(scanResult: string) {
+    if (!target || !question) return;
+    if (processing) return;
+    processing = true;
+    try {
+      const scannedUserDocRef = doc(db, "users", scanResult);
+      const scannedUserDocSnap = await getDoc(scannedUserDocRef);
+      if (!scannedUserDocSnap.exists()) throw new Error("User does not exist");
+      const scannedUserAnswers = scannedUserDocSnap.data().answers;
+      if (!scannedUserAnswers) return goto("/play/wrong");
+      const scannedUserAnswer = scannedUserAnswers[question.id];
+      if (scannedUserAnswer !== target.answer) return goto("/play/wrong");
+      await incrementScore();
+      goto("/play/correct");
+    } catch (error) {
+      processing = false;
+    }
   }
 
   onMount(() => {
     loading = true;
     currentUser.subscribe(async (user) => {
       if (!user) return;
-      const db = getFirestore();
-
-      question = await getQuestion(db);
-      target = await getTarget(db, question.id);
+      question = await getQuestion();
+      target = await getTarget(question.id);
       loading = false;
     });
   });
@@ -119,7 +120,7 @@
 
   {#if $currentUser}
     <div class="flex justify-center my-4">
-      <Button onclick={() => (scanning = !scanning)} class="my-4">
+      <Button onclick={() => (scanning = !scanning)} class="">
         <ScanQrCodeIcon />
         {scanning ? "Show my QR code" : "Scan QR code"}
       </Button>
