@@ -35,12 +35,12 @@
   <nav class="flex gap-2 text-xl">
     <Button href="/register">
       <UserPlusIcon />
-      <!-- <span>Join</span> -->
+      <span class="hidden sm:inline">Join</span>
     </Button>
 
     <Button href="/play">
       <PlayIcon />
-      <!-- <span>Play</span> -->
+      <span class="hidden sm:inline">Play</span>
     </Button>
   </nav>
 
