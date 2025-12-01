@@ -39,7 +39,7 @@
 
     const q = query(
       collection(db, "users"),
-      where("answers", "!=", null)
+      where(`answers.${questionId}`, "!=", null)
       // where("id", "!=", $currentUser?.uid) // Does not work
       // where("lastCheckIn", ">", oneHourAgo) // Does not work
     );
