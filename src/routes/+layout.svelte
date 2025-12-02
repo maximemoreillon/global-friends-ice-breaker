@@ -95,12 +95,14 @@
   <nav class="flex gap-2 text-xl">
     <Button href="/register">
       <UserPlusIcon />
-      <span class="hidden sm:inline">Join</span>
+      <span>Join</span>
+      <!-- <span class="hidden sm:inline">Join</span> -->
     </Button>
 
     <Button href="/play">
       <PlayIcon />
-      <span class="hidden sm:inline">Play</span>
+      <span>Play</span>
+      <!-- <span class="hidden sm:inline">Play</span> -->
     </Button>
 
     <Button href="/leaderboard" variant="outline">
