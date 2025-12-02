@@ -1,11 +1,13 @@
 <script lang="ts">
+  import * as Tabs from "$lib/components/ui/tabs/index.js";
   import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
+  import * as Select from "$lib/components/ui/select/index.js";
   import { Skeleton } from "$lib/components/ui/skeleton/index.js";
   import { Spinner } from "$lib/components/ui/spinner/index.js";
   import ScanQrCodeIcon from "@lucide/svelte/icons/scan-qr-code";
   import FrownIcon from "@lucide/svelte/icons/frown";
   import QRCode from "@trasherdk/svelte-qrcode";
-  import { currentUser } from "$lib/store";
+  import { currentUser, players } from "$lib/store";
   import {
     collection,
     query,
@@ -26,8 +28,13 @@
   let question = $state<{ id: string; playText: any }>();
   let target = $state<{ id: string; answer: any } | null>();
   let loading = $state(false);
-  let scanning = $state(false);
   let processing = $state(false);
+
+  // TODO: have this in dedicated component
+  let scanning = $state(false);
+
+  // TODO: have this in component
+  let selectedPlayerId = $state<string>();
 
   const db = getFirestore();
 
@@ -88,6 +95,11 @@
     }
   }
 
+  async function handlePlayerSelect(id: undefined | string) {
+    if (!id) return;
+    await handleScan(id);
+  }
+
   onMount(() => {
     loading = true;
     currentUser.subscribe(async (user) => {
@@ -107,7 +119,7 @@
       <Skeleton class="h-4 w-[200px]" />
     </div>
   </div>
-{:else if question && target}
+{:else if $currentUser && question && target}
   <div class="text-center">
     <div class="text-xl">
       {question.playText}
@@ -118,21 +130,48 @@
     </div>
   </div>
 
-  {#if $currentUser}
-    <div class="flex justify-center my-4">
-      <Button onclick={() => (scanning = !scanning)} class="">
-        <ScanQrCodeIcon />
-        {scanning ? "Show my QR code" : "Scan QR code"}
-      </Button>
-    </div>
-    <div class="flex flex-col items-center">
-      {#if scanning}
-        <QrScanner onScan={handleScan} />
-      {:else}
-        <QRCode content={$currentUser.uid} size="256" />
-      {/if}
-    </div>
-  {/if}
+  <Tabs.Root value="name" class="my-4">
+    <Tabs.List class="mx-auto">
+      <Tabs.Trigger value="name">By name</Tabs.Trigger>
+      <Tabs.Trigger value="qr">By QR code</Tabs.Trigger>
+    </Tabs.List>
+    <Tabs.Content value="qr">
+      <!-- TODO: componentify this -->
+      <div class="flex justify-center my-4">
+        <Button onclick={() => (scanning = !scanning)} class="">
+          <ScanQrCodeIcon />
+          {scanning ? "Show my QR code" : "Scan QR code"}
+        </Button>
+      </div>
+      <div class="flex flex-col items-center">
+        {#if scanning}
+          <QrScanner onScan={handleScan} />
+        {:else}
+          <QRCode content={$currentUser.uid} size="256" />
+        {/if}
+      </div>
+    </Tabs.Content>
+    <Tabs.Content value="name" class="flex gap-2 justify-center my-4">
+      <!-- TODO: componentify this -->
+      <Select.Root type="single" bind:value={selectedPlayerId}>
+        <!-- TODO: this is dirty -->
+        <Select.Trigger class="w-[180px]">
+          {$players.find((p) => p.id === selectedPlayerId)?.data().name ||
+            "Select player"}
+        </Select.Trigger>
+        <Select.Content>
+          {#each $players as player}
+            <Select.Item value={player.id}>{player.data().name}</Select.Item>
+          {/each}
+        </Select.Content>
+      </Select.Root>
+
+      <Button
+        disabled={!selectedPlayerId}
+        onclick={() => handlePlayerSelect(selectedPlayerId)}>Submit</Button
+      >
+    </Tabs.Content>
+  </Tabs.Root>
 {:else if target === null}
   <div class="flex flex-col gap-2 items-center">
     <FrownIcon size="78" />
@@ -140,8 +179,8 @@
   </div>
 {/if}
 
+<!-- Dialog for loader after scan -->
 <AlertDialog.Root bind:open={processing}>
-  <!-- <AlertDialog.Trigger>Open</AlertDialog.Trigger> -->
   <AlertDialog.Content class="w-xs">
     <AlertDialog.Header>
       <AlertDialog.Title class="text-center">Checking...</AlertDialog.Title>
@@ -149,9 +188,5 @@
         <Spinner class="size-18" />
       </AlertDialog.Description>
     </AlertDialog.Header>
-    <!-- <AlertDialog.Footer>
-      <AlertDialog.Cancel>Cancel</AlertDialog.Cancel>
-      <AlertDialog.Action>Continue</AlertDialog.Action>
-    </AlertDialog.Footer> -->
   </AlertDialog.Content>
 </AlertDialog.Root>
