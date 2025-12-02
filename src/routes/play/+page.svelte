@@ -66,6 +66,10 @@
     await setDoc(currentUserDoc, { score }, { merge: true });
   }
 
+  function compareAnswers(a: string, b: string) {
+    return a.trim().toLocaleLowerCase() === b.trim().toLocaleLowerCase();
+  }
+
   async function handleSelect(scanResult: string) {
     if (!target || !question) return;
     if (processing) return;
@@ -77,7 +81,8 @@
       const scannedUserAnswers = scannedUserDocSnap.data().answers;
       if (!scannedUserAnswers) return goto("/play/wrong");
       const scannedUserAnswer = scannedUserAnswers[question.id];
-      if (scannedUserAnswer !== target.answer) return goto("/play/wrong");
+      if (!compareAnswers(scannedUserAnswer, target.answer))
+        return goto("/play/wrong");
       await incrementScore();
       goto("/play/correct");
     } catch (error) {
