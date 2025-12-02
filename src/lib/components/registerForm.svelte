@@ -1,6 +1,6 @@
 <script lang="ts">
   import * as Form from "$lib/components/ui/form/index.js";
-  import { currentUser } from "$lib/store";
+  import { currentUser, currentUserDoc } from "$lib/store";
   import { setDoc, getFirestore, doc } from "firebase/firestore";
   import { Input } from "$lib/components/ui/input/index.js";
 
@@ -24,12 +24,17 @@
     ),
   });
 
+  function findUserAnswer(id: string) {
+    if (!$currentUserDoc?.data()?.answers) return;
+    return $currentUserDoc.data().answers[id];
+  }
+
   const data = {
-    name: "",
+    name: ($currentUserDoc?.data().name as string) || "", // TODO: dirty
     answers: questions.reduce(
       (acc, q) => ({
         ...acc,
-        [q.id]: "",
+        [q.id]: findUserAnswer(q.id) || "",
       }),
       {}
     ),

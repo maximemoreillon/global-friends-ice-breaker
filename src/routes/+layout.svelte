@@ -9,7 +9,7 @@
   import PlayerCount from "$lib/components/playerCount.svelte";
   import Score from "$lib/components/score.svelte";
   import Button from "$lib/components/ui/button/button.svelte";
-  import { currentUser, players } from "$lib/store";
+  import { currentUser, currentUserDoc, players } from "$lib/store";
   import {
     collection,
     doc,
@@ -51,12 +51,25 @@
     });
   };
 
+  const subscribeToUser = () => {
+    if (!$currentUser) return;
+
+    const db = getFirestore();
+
+    const userDocRef = doc(db, "users", $currentUser.uid);
+
+    onSnapshot(userDocRef, (docSnap) => {
+      currentUserDoc.set(docSnap);
+    });
+  };
+
   auth.onAuthStateChanged(async (user) => {
     currentUser.set(user);
     if (!user) return;
-    checkIn();
+    await checkIn();
     setInterval(checkIn, 5 * 60 * 1000);
     subscribeToPlayers();
+    subscribeToUser();
   });
 
   onMount(async () => {
@@ -95,7 +108,7 @@
 </header>
 
 <main class="max-w-3xl mx-auto my-8 px-2">
-  {#if $currentUser}
+  {#if $currentUserDoc}
     {@render children()}
   {:else}
     <div class="flex justify-center">

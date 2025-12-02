@@ -24,6 +24,8 @@
   import QrScanner from "$lib/components/qrScanner.svelte";
   import { goto } from "$app/navigation";
   import { playerIsActive } from "$lib/helpers";
+  import SelectUserByQr from "$lib/components/selectUserByQr.svelte";
+  import SelectUserByName from "$lib/components/selectUserByName.svelte";
 
   let question = $state<{ id: string; playText: any }>();
   let target = $state<{ id: string; answer: any } | null>();
@@ -76,7 +78,7 @@
     await setDoc(currentUserDoc, { score }, { merge: true });
   }
 
-  async function handleScan(scanResult: string) {
+  async function handleSelect(scanResult: string) {
     if (!target || !question) return;
     if (processing) return;
     processing = true;
@@ -93,11 +95,6 @@
     } catch (error) {
       processing = false;
     }
-  }
-
-  async function handlePlayerSelect(id: undefined | string) {
-    if (!id) return;
-    await handleScan(id);
   }
 
   onMount(() => {
@@ -130,46 +127,16 @@
     </div>
   </div>
 
-  <Tabs.Root value="name" class="my-4">
+  <Tabs.Root value="qr" class="my-4">
     <Tabs.List class="mx-auto">
-      <Tabs.Trigger value="name">By name</Tabs.Trigger>
       <Tabs.Trigger value="qr">By QR code</Tabs.Trigger>
+      <Tabs.Trigger value="name">By name</Tabs.Trigger>
     </Tabs.List>
     <Tabs.Content value="qr">
-      <!-- TODO: componentify this -->
-      <div class="flex justify-center my-4">
-        <Button onclick={() => (scanning = !scanning)} class="">
-          <ScanQrCodeIcon />
-          {scanning ? "Show my QR code" : "Scan QR code"}
-        </Button>
-      </div>
-      <div class="flex flex-col items-center">
-        {#if scanning}
-          <QrScanner onScan={handleScan} />
-        {:else}
-          <QRCode content={$currentUser.uid} size="256" />
-        {/if}
-      </div>
+      <SelectUserByQr onSelect={handleSelect} />
     </Tabs.Content>
-    <Tabs.Content value="name" class="flex gap-2 justify-center my-4">
-      <!-- TODO: componentify this -->
-      <Select.Root type="single" bind:value={selectedPlayerId}>
-        <!-- TODO: this is dirty -->
-        <Select.Trigger class="w-[180px]">
-          {$players.find((p) => p.id === selectedPlayerId)?.data().name ||
-            "Select player"}
-        </Select.Trigger>
-        <Select.Content>
-          {#each $players as player}
-            <Select.Item value={player.id}>{player.data().name}</Select.Item>
-          {/each}
-        </Select.Content>
-      </Select.Root>
-
-      <Button
-        disabled={!selectedPlayerId}
-        onclick={() => handlePlayerSelect(selectedPlayerId)}>Submit</Button
-      >
+    <Tabs.Content value="name">
+      <SelectUserByName onSelect={handleSelect} />
     </Tabs.Content>
   </Tabs.Root>
 {:else if target === null}
