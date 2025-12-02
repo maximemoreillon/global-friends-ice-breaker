@@ -1,13 +1,10 @@
 <script lang="ts">
   import * as Tabs from "$lib/components/ui/tabs/index.js";
   import * as AlertDialog from "$lib/components/ui/alert-dialog/index.js";
-  import * as Select from "$lib/components/ui/select/index.js";
   import { Skeleton } from "$lib/components/ui/skeleton/index.js";
   import { Spinner } from "$lib/components/ui/spinner/index.js";
-  import ScanQrCodeIcon from "@lucide/svelte/icons/scan-qr-code";
   import FrownIcon from "@lucide/svelte/icons/frown";
-  import QRCode from "@trasherdk/svelte-qrcode";
-  import { currentUser, players } from "$lib/store";
+  import { currentUser } from "$lib/store";
   import {
     collection,
     query,
@@ -16,12 +13,9 @@
     getFirestore,
     doc,
     getDoc,
-    Firestore,
     setDoc,
   } from "firebase/firestore";
   import { onMount } from "svelte";
-  import Button from "$lib/components/ui/button/button.svelte";
-  import QrScanner from "$lib/components/qrScanner.svelte";
   import { goto } from "$app/navigation";
   import { playerIsActive } from "$lib/helpers";
   import SelectUserByQr from "$lib/components/selectUserByQr.svelte";
@@ -31,12 +25,6 @@
   let target = $state<{ id: string; answer: any } | null>();
   let loading = $state(false);
   let processing = $state(false);
-
-  // TODO: have this in dedicated component
-  let scanning = $state(false);
-
-  // TODO: have this in component
-  let selectedPlayerId = $state<string>();
 
   const db = getFirestore();
 
