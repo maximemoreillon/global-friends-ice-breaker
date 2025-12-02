@@ -9,7 +9,6 @@
   const db = getFirestore();
 
   let loading = $state(false);
-
   let questions = $state<{ id: string; text: string }[]>([]);
 
   onMount(() => {
@@ -30,6 +29,8 @@
     });
   });
 </script>
+
+<h2 class="text-3xl my-4 text-center">Registration</h2>
 
 {#if loading}
   <div class="flex items-center space-x-4 justify-center">

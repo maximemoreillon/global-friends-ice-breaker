@@ -14,7 +14,7 @@
   <div class="flex gap-4 justify-center flex-col items-center">
     <Button href="/register">
       <UserPlusIcon />
-      <span>Register your info to join the game</span>
+      <span>Register to join the game</span>
     </Button>
 
     <Button href="/play">

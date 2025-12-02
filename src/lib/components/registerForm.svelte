@@ -15,17 +15,13 @@
     .union([z.string().min(4).max(60), z.literal(""), z.null()])
     .transform((value) => (value === "" ? null : value));
 
-  const schema = z.object({
+  const answersSchema = z.object(
+    questions.reduce((acc, q) => ({ ...acc, [q.id]: answerSchema }), {})
+  );
+
+  const formSchema = z.object({
     name: z.string().min(3).max(60),
-    answers: z.object(
-      questions.reduce(
-        (acc, q) => ({
-          ...acc,
-          [q.id]: answerSchema,
-        }),
-        {}
-      )
-    ),
+    answers: answersSchema,
   });
 
   function findUserAnswer(id: string) {
@@ -44,8 +40,8 @@
     ),
   };
 
-  const form = superForm(defaults(data, zod4(schema)), {
-    validators: zod4(schema),
+  const form = superForm(defaults(data, zod4(formSchema)), {
+    validators: zod4(formSchema),
     SPA: true,
     dataType: "json",
     async onUpdate({ form }) {

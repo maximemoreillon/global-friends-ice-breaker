@@ -31,7 +31,6 @@
 
 <div class="flex gap-2 justify-center my-4">
   <Select.Root type="single" bind:value={selectedPlayerId}>
-    <!-- TODO: this is dirty -->
     <Select.Trigger class="w-[180px]">
       {triggerText()}
     </Select.Trigger>

@@ -15,7 +15,6 @@
   }
 </script>
 
-<!-- TODO: componentify this -->
 <div class="flex justify-center my-4">
   <Button onclick={() => (scanning = !scanning)} class="">
     <ScanQrCodeIcon />

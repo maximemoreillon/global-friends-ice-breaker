@@ -110,17 +110,15 @@
     </div>
   </div>
 {:else if $currentUser && question && target}
-  <div class="text-center">
-    <div class="text-xl">
-      {question.playText}
-    </div>
-
-    <div class="text-3xl my-2">
-      {target.answer}
-    </div>
+  <div class="text-xl text-center my-4">
+    {question.playText}
   </div>
 
-  <Tabs.Root value="qr" class="my-4">
+  <div class="text-3xl text-center my-8">
+    {target.answer}
+  </div>
+
+  <Tabs.Root value="qr" class="my-8">
     <Tabs.List class="mx-auto">
       <Tabs.Trigger value="qr">By QR code</Tabs.Trigger>
       <Tabs.Trigger value="name">By name</Tabs.Trigger>
