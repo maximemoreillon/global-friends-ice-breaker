@@ -40,6 +40,7 @@
 		"@trasherdk/svelte-qrcode": "^0.2.4",
 		"firebase": "^12.6.0",
 		"html5-qrcode": "^2.3.8",
+		"mode-watcher": "^1.1.0",
 		"qrcodejs": "^1.0.0",
 		"zod": "^4.1.13"
 	}
