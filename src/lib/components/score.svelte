@@ -1,9 +1,8 @@
 <script lang="ts">
   import TrophyIcon from "@lucide/svelte/icons/trophy";
-  import { currentUser } from "$lib/firebase";
+  import { currentUser } from "$lib/store";
   import { getFirestore, doc, onSnapshot } from "firebase/firestore";
   import { onMount } from "svelte";
-  import Button from "./ui/button/button.svelte";
 
   let loading = $state(false);
 

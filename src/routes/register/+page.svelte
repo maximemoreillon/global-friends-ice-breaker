@@ -1,7 +1,7 @@
 <script lang="ts">
   import { Skeleton } from "$lib/components/ui/skeleton/index.js";
 
-  import { currentUser } from "$lib/firebase";
+  import { currentUser } from "$lib/store";
   import { collection, getFirestore, getDocs, query } from "firebase/firestore";
 
   import { onMount } from "svelte";

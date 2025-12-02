@@ -1,7 +1,4 @@
 import { initializeApp } from "firebase/app";
-import { writable } from "svelte/store";
-import { getAuth, type User } from "firebase/auth";
-import { doc, getFirestore, setDoc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyD__aqc8LZ1N5IgKFb-3mAHf2qmsWWGGLQ",
@@ -12,25 +9,6 @@ const firebaseConfig = {
   appId: "1:171279887110:web:5a745977ab60f0496f4c87",
 };
 
-// Initialize Firebase
-initializeApp(firebaseConfig);
-
-export const currentUser = writable<User | null>();
-
-const auth = getAuth();
-
-auth.onAuthStateChanged(async (user) => {
-  currentUser.set(user);
-
-  if (user) {
-    const db = getFirestore();
-    const userDoc = doc(db, "users", user.uid);
-    await setDoc(userDoc, { lastCheckIn: new Date() }, { merge: true });
-    setInterval(
-      async () => {
-        await setDoc(userDoc, { lastCheckIn: new Date() }, { merge: true });
-      },
-      5 * 60 * 1000
-    );
-  }
-});
+export function init() {
+  initializeApp(firebaseConfig);
+}

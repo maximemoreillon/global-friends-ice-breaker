@@ -5,7 +5,7 @@
   import ScanQrCodeIcon from "@lucide/svelte/icons/scan-qr-code";
   import FrownIcon from "@lucide/svelte/icons/frown";
   import QRCode from "@trasherdk/svelte-qrcode";
-  import { currentUser } from "$lib/firebase";
+  import { currentUser } from "$lib/store";
   import {
     collection,
     query,
