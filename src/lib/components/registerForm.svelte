@@ -12,9 +12,8 @@
   let { questions }: { questions: { text: string; id: string }[] } = $props();
 
   const answerSchema = z
-    .union([z.string().min(4).max(60), z.literal(""), z.null()]) // Allows either a string with min length 4 OR an empty string
-    .optional() // Makes the entire field optional (can be undefined)
-    .transform((value) => (value === "" ? null : value)); // Transforms empty string to undefined
+    .union([z.string().min(4).max(60), z.literal(""), z.null()])
+    .transform((value) => (value === "" ? null : value));
 
   const schema = z.object({
     name: z.string().min(3).max(60),
