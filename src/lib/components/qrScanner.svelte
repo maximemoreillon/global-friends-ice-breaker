@@ -16,8 +16,6 @@
 
   onMount(async () => {
     html5QrCode = new Html5Qrcode("reader");
-    const cameras = await Html5Qrcode.getCameras();
-    if (!cameras.length) return alert("No cameras found");
     const opts = {
       fps: 10,
       // qrbox: { width: 250, height: 250 },
