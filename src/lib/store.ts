@@ -5,6 +5,8 @@ import { writable } from "svelte/store";
 // This is from auth
 export const currentUser = writable<User | null>();
 
-// This is from firestore
-export const currentUserDoc = writable<DocumentData>();
+// Those are from firestore
 export const players = writable<DocumentData[]>([]);
+
+// Used in registerForm
+export const currentUserDoc = writable<DocumentData>();

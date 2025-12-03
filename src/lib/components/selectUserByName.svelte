@@ -1,12 +1,9 @@
 <script lang="ts">
   import * as Select from "$lib/components/ui/select/index.js";
-
   import { currentUser, players } from "$lib/store";
-
   import { onMount } from "svelte";
   import Button from "$lib/components/ui/button/button.svelte";
 
-  // TODO: have this in component
   let selectedPlayerId = $state<string>();
 
   const { onSelect } = $props();
