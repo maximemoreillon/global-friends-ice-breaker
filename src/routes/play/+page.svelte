@@ -4,7 +4,7 @@
   import { Skeleton } from "$lib/components/ui/skeleton/index.js";
   import { Spinner } from "$lib/components/ui/spinner/index.js";
   import FrownIcon from "@lucide/svelte/icons/frown";
-  import { currentUser } from "$lib/store";
+  import { currentUser, currentUserDoc } from "$lib/store";
   import {
     collection,
     query,
@@ -58,12 +58,10 @@
   }
 
   async function incrementScore() {
-    if (!$currentUser) return;
-    const currentUserDoc = doc(db, "users", $currentUser.uid);
-    const currentUserDocSnap = await getDoc(currentUserDoc);
-    if (!currentUserDocSnap.exists()) return;
-    const score = (currentUserDocSnap.data().score || 0) + 1;
-    await setDoc(currentUserDoc, { score }, { merge: true });
+    if (!$currentUserDoc) return;
+    const userDoc = doc(db, "users", $currentUserDoc.id); // Need to find doc agfain because Svelte writable does not contain necessary functions
+    const score = ($currentUserDoc.data().score || 0) + 1;
+    await setDoc(userDoc, { score }, { merge: true });
   }
 
   function compareAnswers(a: string, b: string) {
