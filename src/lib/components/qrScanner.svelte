@@ -7,7 +7,6 @@
 
   function onScanSuccess(decodedText: string, decodedResult: any) {
     onScan(decodedText);
-    // html5QrCode.clear();
   }
 
   function onScanFailure(error: string) {

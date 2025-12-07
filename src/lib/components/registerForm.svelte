@@ -70,7 +70,7 @@
         <Input {...props} bind:value={$formData.name} />
       {/snippet}
     </Form.Control>
-    <Form.Description>Nicknames are OK</Form.Description>
+    <!-- <Form.Description>Nicknames are OK</Form.Description> -->
     <Form.FieldErrors />
   </Form.Field>
 
